@@ -41,6 +41,9 @@ jobs:
                     const match = label.match(/^D-(\\d+)$/);
                     if (match) {
                       const number = parseInt(match[1], 10);
+                      if (number < 1) {
+                        return \`:boom:\`;
+                      }
                       return \`D-\${number - 1}\`;
                     }
                     return label;
