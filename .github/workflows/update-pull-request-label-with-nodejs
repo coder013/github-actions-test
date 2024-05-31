@@ -1,0 +1,56 @@
+name: Update Pull Request Label With Node.js
+
+on:
+  schedule:
+    - cron: '0 9 * * *'  # 매일 아침 9시, UTC
+  workflow_dispatch:  # 수동으로 워크플로우를 트리거할 수 있는 옵션
+
+jobs:
+  update-labels:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Update labels with nodejs
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_TEST_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          node -e "
+            const { Octokit } = require('@octokit/rest');
+            const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+            const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
+            
+            (async () => {
+              try {
+                const { data: pulls } = await octokit.pulls.list({ owner, repo, state: 'open' });
+                for (const pull of pulls) {
+                  const labels = pull.labels.map(label => label.name);
+                  const newLabels = labels.map(label => {
+                    const match = label.match(/^D-(\\d+)$/);
+                    if (match) {
+                      const number = parseInt(match[1], 10);
+                      return \`D-\${number - 1}\`;
+                    }
+                    return label;
+                  });
+                  await octokit.issues.update({
+                    owner,
+                    repo,
+                    issue_number: pull.number,
+                    labels: newLabels,
+                  });
+                  console.log(\`Updated labels for PR #\${pull.number}\`);
+                }
+              } catch (error) {
+                console.error(\`Error updating labels: \${error.message}\`);
+              }
+            })();
+          "
