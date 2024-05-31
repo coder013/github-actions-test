@@ -1,0 +1,39 @@
+name: Update Pull Request Label
+
+on:
+  schedule:
+    - cron: '0 9 * * *'  # 매일 아침 9시, UTC
+  workflow_dispatch:  # 수동으로 워크플로우를 트리거할 수 있는 옵션
+
+jobs:
+  update-labels:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Update labels
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_ACTIONS_TEST_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          curl -s -H "Authorization: token $GITHUB_TOKEN" \
+               -H "Accept: application/vnd.github.v3+json" \
+               "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls?state=open" \
+               | jq -r '.[] | @base64' \
+               | while read pr; do
+                   _jq() {
+                     echo ${pr} | base64 --decode | jq -r ${1}
+                   }
+
+                   PR_NUMBER=$(_jq '.number')
+                   PR_URL=$(_jq '.url')
+
+                   # test 라벨 추가
+                   curl -s -X POST \
+                        -H "Authorization: token $GITHUB_TOKEN" \
+                        -H "Accept: application/vnd.github.v3+json" \
+                        -d '{"labels":["test"]}' \
+                        "https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/labels"
+                 done
