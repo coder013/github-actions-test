@@ -100,9 +100,11 @@ jobs:
                   });
                 }
 
-                await axios.post(process.env.SLACK_WEBHOOK_URL, JSON.stringify(labelMap));
+                await axios.post(process.env.SLACK_WEBHOOK_URL, {
+                  text: JSON.stringify(labelMap)
+                });
               } catch (error) {
-                console.error(\`Error updating labels: \${error.message}\`);
+                console.error(\`Error sending notifications: \${error.message}\`);
               }
             })();
           "
