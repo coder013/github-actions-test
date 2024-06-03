@@ -21,6 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           npm install @octokit/rest
+          npm install axios
           
       - name: Update labels with nodejs
         env:
