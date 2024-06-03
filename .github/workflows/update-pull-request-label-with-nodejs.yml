@@ -53,7 +53,7 @@ jobs:
                     return label;
                   });
 
-                  async octokit.issues.update({
+                  await octokit.issues.update({
                     owner,
                     repo,
                     issue_number: pull.number,
@@ -99,7 +99,7 @@ jobs:
                   });
                 }
 
-                async axios.post(process.env.SLACK_WEBHOOK_URL, JSON.stringify(labelMap));
+                await axios.post(process.env.SLACK_WEBHOOK_URL, JSON.stringify(labelMap));
               } catch (error) {
                 console.error(\`Error updating labels: \${error.message}\`);
               }
