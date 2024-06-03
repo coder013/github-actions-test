@@ -35,27 +35,71 @@ jobs:
             (async () => {
               try {
                 const { data: pulls } = await octokit.pulls.list({ owner, repo, state: 'open' });
+
                 for (const pull of pulls) {
                   const labels = pull.labels.map(label => label.name);
                   const newLabels = labels.map(label => {
                     const match = label.match(/^D-(\\d+)$/);
                     if (match) {
                       const number = parseInt(match[1], 10);
+
                       if (number < 1) {
                         return \`:boom:\`;
                       }
+
                       return \`D-\${number - 1}\`;
                     }
+
                     return label;
                   });
-                  await octokit.issues.update({
+
+                  async octokit.issues.update({
                     owner,
                     repo,
                     issue_number: pull.number,
                     labels: newLabels,
                   });
-                  console.log(\`Updated labels for PR #\${pull.number}\`);
                 }
+              } catch (error) {
+                console.error(\`Error updating labels: \${error.message}\`);
+              }
+            })();
+          "
+          
+      - name: Send Slack notifications
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_TEST_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          SLACK_WEBHOOK_URL: ${{ secrets.ACTIONS_TEST_SLACK_WEBHOOK_URL }}
+        run: |
+          node -e "
+            const axios = require('axios');
+            const { Octokit } = require('@octokit/rest');
+            const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+            const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
+            
+            (async () => {
+              try {
+                const { data: pulls } = await octokit.pulls.list({ owner, repo, state: 'open' });
+                const labelMap = new Map();
+
+                for (const pull of pulls) {
+                  pull.labels.forEach(label => {
+                    const match = label.match(/^D-(\\d+)$/);
+
+                    if (!match && label != ':boom:') {
+                      return;
+                    }
+
+                    if (labelMap[label] == undefined) {
+                      labelMap[label] = 1;
+                    } else {
+                      labelMap[label] += 1;
+                    }
+                  });
+                }
+
+                async axios.post(process.env.SLACK_WEBHOOK_URL, JSON.stringify(labelMap));
               } catch (error) {
                 console.error(\`Error updating labels: \${error.message}\`);
               }
