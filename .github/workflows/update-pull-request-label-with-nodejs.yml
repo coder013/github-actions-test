@@ -86,16 +86,16 @@ jobs:
 
                 for (const pull of pulls) {
                   pull.labels.forEach(label => {
-                    const match = label.match(/^D-(\\d+)$/);
+                    const match = label.name.match(/^D-(\\d+)$/);
 
-                    if (!match && label != ':boom:') {
+                    if (!match && label.name != ':boom:') {
                       return;
                     }
 
-                    if (labelMap[label] == undefined) {
-                      labelMap[label] = 1;
+                    if (labelMap[label.name] == undefined) {
+                      labelMap[label.name] = 1;
                     } else {
-                      labelMap[label] += 1;
+                      labelMap[label.name] += 1;
                     }
                   });
                 }
