@@ -94,9 +94,9 @@ jobs:
                     }
 
                     if (labelMap[label.name] == undefined) {
-                      labelMap[label.name] = 1;
+                      labelMap.set(label.name, 1);
                     } else {
-                      labelMap[label.name] += 1;
+                      labelMap.set(label.name, labelMap.get(label.name) + 1);
                     }
 
                     const text = \`<\${pull.html_url}|[\${label.name}] \${pull.title}>\`;
