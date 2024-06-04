@@ -83,6 +83,7 @@ jobs:
               try {
                 const { data: pulls } = await octokit.pulls.list({ owner, repo, state: 'open' });
                 const labelMap = new Map();
+                const prList = [];
 
                 for (const pull of pulls) {
                   pull.labels.forEach(label => {
@@ -97,12 +98,46 @@ jobs:
                     } else {
                       labelMap[label.name] += 1;
                     }
+
+                    prList.push({
+                      "value": "<${pull.url}|[${label.name}] ${pull.title}>",
+                      "short": false
+                    });
                   });
                 }
 
-                await axios.post(process.env.SLACK_WEBHOOK_URL, {
-                  text: JSON.stringify(labelMap)
-                });
+                let message;
+
+                if (prList.length > 0) {
+                  const keys = Array.from(labelMap.keys());
+                  keys.sort();
+                  message = {
+                    "text": "🚀 팀 여러분! 멋진 새 PR들이 여러분의 마법 같은 리뷰를 기다리고 있어요! ✨",
+                    "attachments": [
+                      {
+                        "color": "#36a64f",
+                        "title": "리뷰 대기 중인 PR 목록",
+                        "text": keys.map(key => `*${key}*: ${map.get(key)}`).join('\n'),
+                        "fields": prList,
+                        "footer": "행복한 코딩 되세요! 🎉"
+                      }
+                    ]
+                  };
+                } else {
+                  message = {
+                    "text": "🎉 우와! 대기 중인 PR이 없어요! 🥳",
+                    "attachments": [
+                      {
+                        "color": "#FF4500",
+                        "title": "모두 완료!",
+                        "text": "✨ 모두 처리 완료! 이제 편히 쉬거나 다음 대작을 시작해볼까요? 🚀",
+                        "footer": "훌륭한 작업 계속 이어가세요! 💪"
+                      }
+                    ]
+                  };
+                }
+
+                await axios.post(process.env.SLACK_WEBHOOK_URL, message);
               } catch (error) {
                 console.error(\`Error sending notifications: \${error.message}\`);
               }
