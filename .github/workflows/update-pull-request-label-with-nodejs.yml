@@ -113,7 +113,7 @@ jobs:
                 if (prList.length > 0) {
                   const keys = Array.from(labelMap.keys());
                   keys.sort();
-                  const prCount = keys.map(key => `${key}: ${labelMap.get(key)}`).join('\n');
+                  const prCount = keys.map(key => \`\${key}: \${labelMap.get(key)}\`).join('\n');
                   message = {
                     "text": '\:rocket\: 팀 여러분! 멋진 새 PR들이 여러분의 마법 같은 리뷰를 기다리고 있어요! \:sparkles\:',
                     "attachments": [
