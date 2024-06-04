@@ -99,7 +99,7 @@ jobs:
                       labelMap[label.name] += 1;
                     }
 
-                    const text = `<${pull.html_url}|[${label.name}] ${pull.title}>`;
+                    const text = \`<\${pull.html_url}|[\${label.name}] \${pull.title}>\`;
 
                     prList.push({
                       "value": text,
@@ -112,7 +112,7 @@ jobs:
 
                 if (prList.length > 0) {
                   const keys = Array.from(labelMap.keys());
-                  const prCount = keys.map(key => `*${key}*: ${map.get(key)}`).join('\n');
+                  const prCount = keys.map(key => \`*\${key}*: \${map.get(key)}\`).join('\n');
                   keys.sort();
                   message = {
                     "text": "🚀 팀 여러분! 멋진 새 PR들이 여러분의 마법 같은 리뷰를 기다리고 있어요! ✨",
