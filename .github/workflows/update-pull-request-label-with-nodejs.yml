@@ -100,7 +100,7 @@ jobs:
                     }
 
                     prList.push({
-                      "value": `<${pull.url}|[${label.name}] ${pull.title}>`,
+                      "value": \`<\${pull.html_url}|[\${label.name}] \${pull.title}>\`,
                       "short": false
                     });
                   });
