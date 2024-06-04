@@ -99,8 +99,10 @@ jobs:
                       labelMap[label.name] += 1;
                     }
 
+                    const text = `<${pull.html_url}|[${label.name}] ${pull.title}>`;
+
                     prList.push({
-                      "value": \`<\${pull.html_url}|[\${label.name}] \${pull.title}>\`,
+                      "value": text,
                       "short": false
                     });
                   });
@@ -110,6 +112,7 @@ jobs:
 
                 if (prList.length > 0) {
                   const keys = Array.from(labelMap.keys());
+                  const prCount = keys.map(key => `*${key}*: ${map.get(key)}`).join('\n');
                   keys.sort();
                   message = {
                     "text": "🚀 팀 여러분! 멋진 새 PR들이 여러분의 마법 같은 리뷰를 기다리고 있어요! ✨",
@@ -117,7 +120,7 @@ jobs:
                       {
                         "color": "#36a64f",
                         "title": "리뷰 대기 중인 PR 목록",
-                        "text": keys.map(key => `*${key}*: ${map.get(key)}`).join('\n'),
+                        "text": prCount,
                         "fields": prList,
                         "footer": "행복한 코딩 되세요! 🎉"
                       }
