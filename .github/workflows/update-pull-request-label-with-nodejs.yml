@@ -118,11 +118,11 @@ jobs:
                     "text": '\:rocket\: 팀 여러분! 멋진 새 PR들이 여러분의 마법 같은 리뷰를 기다리고 있어요! \:sparkles\:',
                     "attachments": [
                       {
-                        "color": "#36a64f",
-                        "title": "리뷰 대기 중인 PR 목록",
+                        "color": '#36a64f',
+                        "title": '리뷰 대기 중인 PR 목록',
                         "text": prCount,
                         "fields": prList,
-                        "footer": "행복한 코딩 되세요! :tada:"
+                        "footer": '행복한 코딩 되세요! :tada:'
                       }
                     ]
                   };
@@ -131,10 +131,10 @@ jobs:
                     "text": '\:tada\: 우와! 대기 중인 PR이 없어요! \:white_check_mark\:',
                     "attachments": [
                       {
-                        "color": "#FF4500",
-                        "title": "모두 완료!",
+                        "color": '#FF4500',
+                        "title": '모두 완료!',
                         "text": '\:sparkles\: 모두 처리 완료! 이제 편히 쉬거나 다음 대작을 시작해볼까요? \:rocket\:',
-                        "footer": "훌륭한 작업 계속 이어가세요! \:fire\:"
+                        "footer": '훌륭한 작업 계속 이어가세요! \:fire\:'
                       }
                     ]
                   };
