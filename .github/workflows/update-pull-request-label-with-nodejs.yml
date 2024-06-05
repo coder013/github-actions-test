@@ -66,7 +66,7 @@ jobs:
               }
             })();
           "
-          
+
       - name: Send Slack notifications
         env:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_TEST_TOKEN }}
@@ -78,7 +78,7 @@ jobs:
             const { Octokit } = require('@octokit/rest');
             const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
             const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
-            
+
             (async () => {
               try {
                 const { data: pulls } = await octokit.pulls.list({ owner, repo, state: 'open' });
@@ -115,26 +115,25 @@ jobs:
                   keys.sort();
                   const prCount = keys.map(key => \`\${key}: \${labelMap.get(key)}\`).join('\n');
                   message = {
-                    "text": '\:rocket\: 팀 여러분! 멋진 새 PR들이 여러분의 마법 같은 리뷰를 기다리고 있어요! \:sparkles\:',
+                    "text": ':truck: PR이 쌓였습니다',
                     "attachments": [
                       {
-                        "color": '#36a64f',
-                        "title": '리뷰 대기 중인 PR 목록',
+                        "color": '#FF4500',
+                        "title": ':rocket: 리뷰 대기 중인 PR 목록',
                         "text": prCount,
                         "fields": prList,
-                        "footer": '행복한 코딩 되세요! :tada:'
+                        "footer": '어서 일하세요 휴먼 :rotating_light:'
                       }
                     ]
                   };
                 } else {
                   message = {
-                    "text": '\:tada\: 우와! 대기 중인 PR이 없어요! \:white_check_mark\:',
+                    "text": ':white_check_mark: 대기 중인 PR이 없습니다!',
                     "attachments": [
                       {
-                        "color": '#FF4500',
-                        "title": '모두 완료!',
-                        "text": '\:sparkles\: 모두 처리 완료! 이제 편히 쉬거나 다음 대작을 시작해볼까요? \:rocket\:',
-                        "footer": '훌륭한 작업 계속 이어가세요! \:fire\:'
+                        "color": '#36A64F',
+                        "title": ':tada: 모두 완료!',
+                        "footer": '고생했습니다 휴먼 :beers:'
                       }
                     ]
                   };
