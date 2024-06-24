@@ -74,7 +74,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.ACTIONS_TEST_SLACK_WEBHOOK_URL }}
         run: |
           node -e "
-            import axios from 'axios';
+            const axios = require('axios');
 
             (async () => {
               const { Octokit } = await import('@octokit/rest');
