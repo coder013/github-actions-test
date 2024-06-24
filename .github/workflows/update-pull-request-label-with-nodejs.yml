@@ -29,11 +29,11 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           node -e "
-            const { Octokit } = import('@octokit/rest');
-            const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-            const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
-            
             (async () => {
+              const { Octokit } = await import('@octokit/rest');
+              const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+              const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
+
               try {
                 const { data: pulls } = await octokit.pulls.list({ owner, repo, state: 'open' });
 
@@ -75,11 +75,12 @@ jobs:
         run: |
           node -e "
             import axios from 'axios';
-            const { Octokit } = await import('@octokit/rest');
-            const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-            const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
 
             (async () => {
+              const { Octokit } = await import('@octokit/rest');
+              const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+              const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
+
               try {
                 const { data: pulls } = await octokit.pulls.list({ owner, repo, state: 'open' });
                 const labelMap = new Map();
